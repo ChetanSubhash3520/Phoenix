@@ -1,0 +1,37 @@
+.container {
+    max-width: 900px;
+    margin: 0 auto;
+    padding: 1.2rem;
+}
+
+
+ul {
+    list-style-type: none;
+    margin: 0.5;
+    padding: 0.5;
+}
+
+li {
+    font-size: 1.3rem;
+    margin-bottom: 0.75rem;
+    color: #fff;
+}
+
+
+h1 {
+    margin-bottom: 1.1rem;
+    font-size: 2rem;
+    color: #ffd700;
+}
+
+h2 {
+    font-size: 1.6rem;
+    margin-top: 1.5rem;
+    color: #fff;
+}
+
+p {
+    margin-bottom: 0.75rem;
+    font-size: 1.2rem;
+    color: #fff;
+}
