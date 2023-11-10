@@ -1,0 +1,38 @@
+.teams-container {
+    display: flex;
+    flex-wrap: wrap;
+}
+
+.team-card {
+    margin: 10px;
+    padding: 15px; 
+    box-shadow: 0 3px 3px rgba(0, 0, 0, 0.5);
+    height: 210px;
+    width: 400px;
+    flex-direction: column;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border: 2px solid #444; 
+    border-radius: 8px;
+}
+
+.team-card h2 {
+    font-size: 20px;
+    line-height: 1;
+    color: #ffd700; /* Gold color */
+}
+
+.team-card p {
+    margin: 8px 0 8px 0;
+    color: #fff;
+}
+
+.delete-icon {
+    top: 11px;
+    right: 9.5px;
+    cursor: pointer;
+    font-size: 29px;
+    color: black;
+}
+
