@@ -1,0 +1,12 @@
+/* Styles for the webpage body */
+body {
+  margin: 0;
+  font-family: 'Helvetica', sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* Styles for code elements */
+code {
+  font-family: 'Courier New', monospace;
+}
