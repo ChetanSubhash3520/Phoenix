@@ -1,122 +1,136 @@
 import React, { useEffect, useState } from 'react';
-import './DisplayAllEvents.css';
+import './ViewAllEvents.css';
 
-function DisplayAllEvents() {
-  const [teamsData, setTeamsData] = useState([]);
-  const [participantName, setParticipantName] = useState(localStorage.getItem('CustomEventAppParticipantName'));
-  const [participantID, setParticipantID] = useState(localStorage.getItem('CustomEventAppParticipantID'));
-  const [userJoinedTeams, setUserJoinedTeams] = useState([]);
+function ViewAllEvents() {
+    const [events, setEvents] = useState([]);
+    const [name, setName] = useState(localStorage.getItem('EventAppPersonName'));
+    const [ ID, setID] = useState(localStorage.getItem('EventAppPersonID'));
+    const [UserJoinedevents, setUserJoinedevents] = useState([]);
 
-  const startCustomEvent = () => {
-    if (!isLoggedIn()) {
-      window.location.href = '/login';
-    } else {
-      window.location.href = '/start-custom-event';
+
+    const createEvent = () => {
+        if(!isLoggedIn()) {
+            window.location.href = '/login';
+        }
+        else{
+            window.location.href = '/create-event';
+        }
     }
-  };
 
-  useEffect(() => {
-    if (!isLoggedIn()) {
-      window.location.href = '/login';
+    useEffect(() => {
+        if(!isLoggedIn()) {
+            window.location.href = '/login';
+        }
+    });
+
+    useEffect(() => {
+        fetch(`http://localhost:8080/getGroupsByUser?user_id=${localStorage.getItem('EventAppPersonID')}`)
+            .then(response => response.json())
+            .then(data => setUserJoinedevents(data.events))
+            .then(data => console.log(data))
+            .catch(error => console.error(error));
+    }, []);
+
+    useEffect(() => {
+        fetch('http://localhost:8080/groups')
+            .then(response => response.json())
+            .then(data => setEvents(data))
+            .then(data => console.log(data))
+            .catch(error => console.error(error));
+    }, []);
+
+    function goToHome() {
+        window.location.href = '/';
     }
-  }, []);
 
-  useEffect(() => {
-    fetch(`http://localhost:8080/getUserJoinedTeams?participant_id=${localStorage.getItem('CustomEventAppParticipantID')}`)
-      .then(response => response.json())
-      .then(data => setUserJoinedTeams(data.joinedTeams))
-      .catch(error => console.error(error));
-  }, []);
-
-  useEffect(() => {
-    fetch('http://localhost:8080/teams-data')
-      .then(response => response.json())
-      .then(data => setTeamsData(data))
-      .catch(error => console.error(error));
-  }, []);
-
-  function navigateToHome() {
-    window.location.href = '/';
-  }
-
-  function isLoggedIn() {
-    return localStorage.getItem('CustomEventAppParticipantID') !== null;
-  }
-
-  function joinTeam(teamID) {
-    console.log(teamID);
-    if (!isLoggedIn()) {
-      window.location.href = '/login';
-    } else {
-      fetch('http://localhost:8080/participants', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ name: participantName, team_id: teamID, participant_id: parseInt(participantID) }),
-      }).then(() => {
-        window.location.href = '/join-event-team';
-      });
+    function isLoggedIn() {
+        if(localStorage.getItem('EventAppPersonID') != null) {
+            return true;
+        }
+        else {
+            return false;
+        }
     }
-  }
 
-  function leaveTeam(teamID) {
-    console.log(teamID);
-    if (!isLoggedIn()) {
-      window.location.href = '/login';
-    } else {
-      fetch(`http://localhost:8080/leave-team`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ team_id: teamID, participant_id: parseInt(participantID) }),
-      })
-        .then(response => {
-          if (response.ok) {
-            window.location.href = '/event-display';
-          } else {
-            throw new Error('Failed to leave event');
-          }
-        })
-        .catch(error => console.error(error));
+    function joinEvent(EventID) {
+        
+        alert('joined sucessfully')
+        
+        if(!isLoggedIn()) {
+            window.location.href = '/login';
+        }
+        else{
+            fetch('http://localhost:8080/guests', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({name, "group_id": EventID, "user_id": parseInt(ID)}),
+            }).then(window.location.href = '/join-event');
+         }
+        return undefined;
     }
-  }
 
-  return (
-    <div>
-      <button onClick={navigateToHome}>Home</button>
+    function leaveEvent(EventID) {
+        console.log(EventID);
+        if (!isLoggedIn()) {
+            window.location.href = '/login';
+        }
+        else {
+            fetch(`http://localhost:8080/leave-event`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({"group_id": EventID, "user_id": parseInt(ID)}),
+            })
+                .then(response => {
+                    if (response.ok) {
+                        window.location.href = '/join-event';
+                    } else {
+                        throw new Error('Failed to leave event');
+                    }
+                })
+                .catch(error => console.error(error));
+        }
+    }
 
-      <div className="team-data-container">
-        {teamsData
-          .filter(team => userJoinedTeams != null && userJoinedTeams.includes(team.id))
-          .map(team => (
-            <div className="team-card" key={team.id}>
-              <h2>{team.name}</h2>
-              <p>{team.eventTime}</p>
-              <p>{team.eventDate}</p>
-              <p>{team.eventPeriod}</p>
-              <p>{team.current}/{team.max} Filled</p>
-              {userJoinedTeams && userJoinedTeams.includes(team.id) ? (
-                <button style={{ color: 'black', backgroundColor: 'darkgrey' }} onClick={() => leaveTeam(team.id)}>
-                  Leave
-                </button>
-              ) : team.current >= team.max ? (
-                <button style={{ color: 'white', backgroundColor: 'red' }} disabled>
-                  Full
-                </button>
-              ) : (
-                <button onClick={() => joinTeam(team.id)}>Join</button>
-              )}
+    return (
+        <div>
+            {/*<ExampleModal  isOpen={true} onRequestClose={() => {}} title="Example Modal" text="This is an example modal." />*/}
+            <button onClick={goToHome}>Home</button>
+
+
+            <div className="events-container">
+                {events.map(group => (
+                        <div className="group-card" key={group.id}>
+                            <h2>{group.name}</h2>
+                            {/*<p>{group.id}</p>*/}
+                            <p>{group.eventTime}</p>
+                            <p>{group.eventDate}</p>
+                            <p>{group.eventPeriod}</p>
+                
+
+
+
+                            {UserJoinedevents && UserJoinedevents.includes(group.id) ?
+                                <button style={{ color: 'black', backgroundColor: 'darkgrey' }} onClick={() => leaveEvent(group.id)}>Leave</button>
+                                : (group.present >= group.max ?
+                                        <button style={{ color: 'white', backgroundColor: 'red' }} disabled>Full</button>
+                                        : <button onClick={() => joinEvent(group.id)}>Join</button>
+                                )
+                            }
+
+                        </div>
+                    ))
+                }
+                <div className="group-card">
+                    <h3>Create New Event</h3>
+                    <button onClick={createEvent}>Create</button>
+                </div>
             </div>
-          ))}
-        <div className="team-card">
-          <h3>Create New Event Team</h3>
-          <button onClick={startCustomEvent}>Create</button>
         </div>
-      </div>
-    </div>
-  );
+    );
 }
 
-export default DisplayAllEvents;
+export default ViewAllEvents;
