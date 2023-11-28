@@ -1,13 +1,13 @@
 import React from 'react';
 import ReactDOM from 'react-dom/client';
-import './indexpage.css';
-import UserAccount from './UserAccount';
+import './index.css';
+import Account from './Account';
 import reportWebVitals from './reportWebVitals';
-import UserBoard from "./UserBoard";
+import MyDashboard from "./MyDashboard";
 import {BrowserRouter, Link, Route, Routes} from 'react-router-dom'
-import Homepage from "./Base";
+import Homepage from "./Landing";
 import CreateEvent from "./CreateEvent";
-import DisplayAllEvents from "./DisplayAllEvents";
+import ViewAllEvents from "./ViewAllEvents";
 import EventDetails from "./EventDetails";
 import JoinedEvents from "./JoinedEvents";
 
@@ -20,10 +20,10 @@ root.render(
 
           <Routes>
               <Route path="/" element={<Homepage />} />
-              <Route path="/userboard" element={<UserBoard />} />
-                <Route path="/login" element={<UserAccount />} />
+              <Route path="/dashboard" element={<MyDashboard />} />
+                <Route path="/login" element={<Account />} />
                 <Route path="/create-event" element={<CreateEvent />} />
-                <Route path="/join-event" element={<DisplayAllEvents />} />
+                <Route path="/join-event" element={<ViewAllEvents />} />
                 <Route path="/eventDetails" element={<EventDetails />} />
                 <Route path="/joined-events" element={<JoinedEvents />} />
 
