@@ -1,9 +1,9 @@
-.teams-container {
+.events-container {
     display: flex;
     flex-wrap: wrap;
 }
 
-.team-card {
+.group-card {
     margin: 10px;
     padding: 15px; 
     box-shadow: 0 3px 3px rgba(0, 0, 0, 0.5);
@@ -17,13 +17,13 @@
     border-radius: 8px;
 }
 
-.team-card h2 {
+.group-card h2 {
     font-size: 20px;
     line-height: 1;
     color: #ffd700; /* Gold color */
 }
 
-.team-card p {
+.group-card p {
     margin: 8px 0 8px 0;
     color: #fff;
 }
@@ -35,4 +35,3 @@
     font-size: 29px;
     color: black;
 }
-
