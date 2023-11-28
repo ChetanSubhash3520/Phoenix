@@ -24,7 +24,7 @@ function JoinedEvents() {
     });
 
     useEffect(() => {
-        fetch(http://localhost:8080/getGroupsByUser?user_id=${localStorage.getItem('EventAppPersonID')})
+        fetch(`http://localhost:8080/getGroupsByUser?user_id=${localStorage.getItem('EventAppPersonID')}`)
             .then(response => response.json())
             .then(data => setUserJoinedevents(data.groups))
             .then(data => console.log(data))
@@ -75,7 +75,7 @@ function JoinedEvents() {
             window.location.href = '/login';
         }
         else {
-            fetch(http://localhost:8080/leave-event, {
+            fetch(`http://localhost:8080/leave-event`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',

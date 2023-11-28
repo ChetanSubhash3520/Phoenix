@@ -21,7 +21,7 @@ function LoginPage() {
         // Handle login response here
         if (data.message == "User exists") {
           console.log("User exists");
-          fetch(http://localhost:8080/getUserInfo?email=${email}, {
+          fetch(`http://localhost:8080/getUserInfo?email=${email}`, {
             method: 'GET',
             headers: {
               'Content-Type': 'application/json',

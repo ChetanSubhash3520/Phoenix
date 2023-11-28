@@ -50,7 +50,7 @@ const EventDetails = ({ match }) => {
             <div className="container">
                 <h1>Event Details</h1>
                 {isEditable ? ( // Render editable inputs if in edit mode
-                  <div>
+                    <div>
                         <label>Name</label>
                         <input type="text" name="name" value={event.name} onChange={handleInputChange} />
                         <label>Date</label>
@@ -58,7 +58,7 @@ const EventDetails = ({ match }) => {
                         <label>Time</label>
                         <input type="time" name="eventTime" value={event.eventTime} onChange={handleInputChange} />
                         <label>Time Period</label>
-                        {/<input type="text" name="eventPeriod" value={event.eventPeriod} onChange={handleInputChange} />/}
+                        {/*<input type="text" name="eventPeriod" value={event.eventPeriod} onChange={handleInputChange} />*/}
                         <select value={event.eventPeriod} onChange={handleInputChange}>
                             <option value="">Select event period</option>
                             <option value="30 mins">30 mins</option>
