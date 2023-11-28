@@ -1,113 +1,124 @@
 import React, { useEffect, useState } from 'react';
-import './UserEvents.css';
+import './JoinedEvents.css';
 
 function JoinedEvents() {
-  const [eventsByUser, setEventsByUser] = useState([]);
-  const [participantFullName, setParticipantFullName] = useState(localStorage.getItem('CustomEventAppParticipantFullName'));
-  const [participantIdentifier, setParticipantIdentifier] = useState(localStorage.getItem('CustomEventAppParticipantID'));
-  const [attendedUserEvents, setAttendedUserEvents] = useState([]);
+    const [events, setEvents] = useState([]);
+    const [name, setName] = useState(localStorage.getItem('EventAppPersonName'));
+    const [ ID, setID] = useState(localStorage.getItem('EventAppPersonID'));
+    const [UserJoinedevents, setUserJoinedevents] = useState([]);
 
-  const initiateCustomEvent = () => {
-    if (!isParticipantLoggedIn()) {
-      window.location.href = '/login';
-    } else {
-      window.location.href = '/initiate-custom-event';
+
+    const createEvent = () => {
+        if(!isLoggedIn()) {
+            window.location.href = '/login';
+        }
+        else{
+            window.location.href = '/create-event';
+        }
     }
-  };
 
-  useEffect(() => {
-    if (!isParticipantLoggedIn()) {
-      window.location.href = '/login';
+    useEffect(() => {
+        if(!isLoggedIn()) {
+            window.location.href = '/login';
+        }
+    });
+
+    useEffect(() => {
+        fetch(http://localhost:8080/getGroupsByUser?user_id=${localStorage.getItem('EventAppPersonID')})
+            .then(response => response.json())
+            .then(data => setUserJoinedevents(data.groups))
+            .then(data => console.log(data))
+            .catch(error => console.error(error));
+    }, []);
+
+    useEffect(() => {
+        fetch('http://localhost:8080/groups')
+            .then(response => response.json())
+            .then(data => setEvents(data))
+            .then(data => console.log(data))
+            .catch(error => console.error(error));
+    }, []);
+
+    function goToHome() {
+        window.location.href = '/';
     }
-  }, []);
 
-  useEffect(() => {
-    fetch(`http://localhost:8080/getAttendedUserEvents?participant_id=${localStorage.getItem('CustomEventAppParticipantID')}`)
-      .then(response => response.json())
-      .then(data => setAttendedUserEvents(data.attendedEvents))
-      .catch(error => console.error(error));
-  }, []);
-
-  useEffect(() => {
-    fetch('http://localhost:8080/custom-events')
-      .then(response => response.json())
-      .then(data => setEventsByUser(data))
-      .catch(error => console.error(error));
-  }, []);
-
-  function goToStart() {
-    window.location.href = '/';
-  }
-
-  function isParticipantLoggedIn() {
-    return localStorage.getItem('CustomEventAppParticipantID') !== null;
-  }
-
-  function participateInEvent(eventID) {
-    console.log(eventID);
-    if (!isParticipantLoggedIn()) {
-      window.location.href = '/login';
-    } else {
-      fetch('http://localhost:8080/participants', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ fullName: participantFullName, event_id: eventID, participant_id: parseInt(participantIdentifier) }),
-      }).then(() => {
-        window.location.href = '/participate-event';
-      });
+    function isLoggedIn() {
+        if(localStorage.getItem('EventAppPersonID') != null) {
+            return true;
+        }
+        else {
+            return false;
+        }
     }
-  }
 
-  function exitEvent(eventID) {
-    console.log(eventID);
-    if (!isParticipantLoggedIn()) {
-      window.location.href = '/login';
-    } else {
-      fetch(`http://localhost:8080/exit-event`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ event_id: eventID, participant_id: parseInt(participantIdentifier) }),
-      })
-        .then(response => {
-          if (response.ok) {
-            window.location.href = '/custom-events';
-          } else {
-            throw new Error('Failed to exit event');
-          }
-        })
-        .catch(error => console.error(error));
+    function joinEvent(EventID) {
+        console.log(EventID);
+        if(!isLoggedIn()) {
+            window.location.href = '/login';
+        }
+        else{
+            fetch('http://localhost:8080/guests', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({name, "group_id": EventID, "user_id": parseInt(ID)}),
+            }).then(window.location.href = '/join-event');
+        }
+        return undefined;
     }
-  }
 
-  return (
-    <div>
-      <button onClick={goToStart}>Start</button>
+    function leaveEvent(EventID) {
+        console.log(EventID);
+        if (!isLoggedIn()) {
+            window.location.href = '/login';
+        }
+        else {
+            fetch(http://localhost:8080/leave-event, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({"group_id": EventID, "user_id": parseInt(ID)}),
+            })
+                .then(response => {
+                    if (response.ok) {
+                        window.location.href = '/joined-events';
+                    } else {
+                        throw new Error('Failed to leave event');
+                    }
+                })
+                .catch(error => console.error(error));
+        }
+    }
 
-      <div className="custom-events-container">
-        {eventsByUser
-          .filter(event => attendedUserEvents != null && attendedUserEvents.includes(event.id))
-          .map(event => (
-            <div className="custom-event-card" key={event.id}>
-              <h2>{event.title}</h2>
-              <p>{event.time}</p>
-              <p>{event.date}</p>
-              <p>{event.duration}</p>
-              <button style={{ color: 'black', backgroundColor: 'darkgrey' }} onClick={() => exitEvent(event.id)}>
-                Exit
-              </button>
+
+
+    return (
+        <div>
+            <button onClick={goToHome}>Home</button>
+
+            <div className="events-container">
+                {events
+                    .filter(group => UserJoinedevents != null && UserJoinedevents.includes(group.id))
+                    .map(group => (
+                        <div className="group-card" key={group.id}>
+                            <h2>{group.name}</h2>
+                            <p>{group.eventTime}</p>
+                            <p>{group.eventDate}</p>
+                            <p>{group.eventPeriod}</p>
+                            <button style={{ color: 'black', backgroundColor: 'darkgrey' }} onClick={() => leaveEvent(group.id)}>Leave</button>
+                        </div>
+                    ))
+                }
+                <div className="group-card">
+                    <h3>Create New Event</h3>
+                    <button onClick={createEvent}>Create</button>
+                </div>
             </div>
-          ))}
-        <div className="custom-event-card">
-          <h3>Create New Custom Event</h3>
-          <button onClick={initiateCustomEvent}>Create</button>
         </div>
-      </div>
-    </div>
-  );
+    );
 }
 
 export default JoinedEvents;

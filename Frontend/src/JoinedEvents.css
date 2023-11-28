@@ -1,29 +1,29 @@
-.teams-container {
+.events-container {
     display: flex;
     flex-wrap: wrap;
 }
 
-.team-card {
-    display: flex;
-    margin: 10px;
+.group-card {
+    margin: 10px; 
     padding: 15px;
-    width: 300px;
-    height: 200px;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-    box-shadow: 0 3px 3px rgba(0, 0, 0, 0.4);
     border: 2px solid #444;
     border-radius: 8px;
+    box-shadow: 0 3px 3px rgba(0, 0, 0, 0.4);
+    height: 210px;
+    width: 320px;
+    display: flex;
+    align-items: center;
+    flex-direction: column;
+    justify-content: center;
 }
 
-.team-card h2 {
-    font-size: 22px;
-    line-height: 1;
-    color: #ffd700;
+.group-card h2 {
+    font-size: 20px;
+    margin: 0;
+    color: #ffd700; /* Gold color */
 }
 
-.team-card p {
-    margin: 8px 0 8px 0;
-    color: #fff;
+.group-card p {
+    margin: 8px 0;
+    color: #fff; /* White color */
 }
